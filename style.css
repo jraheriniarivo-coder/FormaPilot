@@ -1304,3 +1304,61 @@ footer {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }
 }
+/* Menu déroulant Profil */
+.profile-dropdown-wrapper {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  width: 220px;
+  z-index: 50;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.dropdown-header strong {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.dropdown-header small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.dropdown-item {
+  width: 100%;
+  text-align: left;
+  padding: 12px 15px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #bc7545;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: #fff0e8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

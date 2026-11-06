@@ -110,6 +110,42 @@ $("#backToOverview").addEventListener("click", () => {
   $("#coursePlayerView").classList.add("hidden");
   renderView("overview");
 });
+// FONCTION DE GESTION DES DROITS SELON LE RÔLE
+function applyRolePermissions(role) {
+  // Éléments de l'interface
+  const btnNewCourse = $("#primaryAction");
+  const btnExport = $("#exportCsv");
+  const navReports = $('[data-view="reports"]');
+  const navSettings = $('[data-view="settings"]');
+  const kpiGrid = $(".kpi-grid");
+  
+  // On met à jour le texte dans le menu déroulant
+  $("#dropdownRole").textContent = "Connecté en tant que : " + roleLabels[role][lang];
+
+  // Réinitialisation (tout le monde voit tout au départ)
+  [btnNewCourse, btnExport, navReports, navSettings, kpiGrid].forEach(el => {
+    if(el) el.classList.remove("hidden");
+  });
+
+  // Application des restrictions selon le rôle
+  if (role === "staff") {
+    // L'apprenant ne voit pas les stats globales, ni le bouton nouveau cours, ni les rapports
+    if(kpiGrid) kpiGrid.classList.add("hidden");
+    if(btnNewCourse) btnNewCourse.classList.add("hidden");
+    if(btnExport) btnExport.classList.add("hidden");
+    if(navReports) navReports.classList.add("hidden");
+    if(navSettings) navSettings.classList.add("hidden");
+  } 
+  else if (role === "trainer") {
+    // Le formateur ne voit pas les rapports globaux
+    if(navReports) navReports.classList.add("hidden");
+  }
+  else if (role === "manager") {
+    // Le manager ne peut pas créer de cours
+    if(btnNewCourse) btnNewCourse.classList.add("hidden");
+  }
+  // admin et management voient tout par défaut.
+}
 
 function renderView(view){
   currentView=view;
@@ -119,6 +155,7 @@ function renderView(view){
   $$(".nav-item[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
   $("#pageCrumb").textContent=t(view);
   $("#overviewView").classList.toggle("hidden",!isOverview);
+  applyRolePermissions($("#roleSelect").value);
   $("#genericView").classList.toggle("hidden",isOverview);
   
   if(isOverview) {
@@ -165,15 +202,40 @@ $("#forgotPassword").addEventListener("click", (e) => {
 $$("[data-view]").forEach(btn=>btn.addEventListener("click",()=>{renderView(btn.dataset.view);$("#sidebar").classList.remove("open");}));
 $$("[data-open-view]").forEach(btn=>btn.addEventListener("click",()=>renderView(btn.dataset.openView)));
 $("#langSwitch").addEventListener("click",()=>{lang=lang==="fr"?"en":"fr";renderTranslations();});
-$("#roleSelect").addEventListener("change",()=>{renderView(currentView);showToast(roleLabels[$("#roleSelect").value][lang]+" — "+t("demoMode"));});
+$("#roleSelect").addEventListener("change",(e)=>{
+  lang = lang; // Garde la langue actuelle
+  applyRolePermissions(e.target.value); // Applique les nouveaux droits
+  renderView(currentView); // Rafraichit la vue
+  showToast("Rôle prévisualisé : " + roleLabels[e.target.value][lang]);
+});
 $("#exportCsv").addEventListener("click",exportCsv);
 $("#primaryAction").addEventListener("click",()=>showToast(t("newCourseMsg")));
 $("#activityPeriod").addEventListener("change",renderChart);
 $("#mobileMenu").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
 
-// BOUTONS FIXES (Notifications & Profil)
+// BOUTONS FIXES (Notifications)
 $("#notifBtn").addEventListener("click", () => showToast(t("notifMsg")));
-$("#profileMenuBtn").addEventListener("click", () => showToast(t("profileMsg")));
-$("#topProfileBtn").addEventListener("click", () => showToast(t("profileMsg")));
+
+// GESTION DU MENU PROFIL ET DÉCONNEXION
+$("#topProfileBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  $("#profileDropdown").classList.toggle("hidden");
+});
+
+// Fermer le menu si on clique ailleurs sur la page
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".profile-dropdown-wrapper")) {
+    $("#profileDropdown").classList.add("hidden");
+  }
+});
+
+// Bouton de déconnexion
+$("#logoutBtn").addEventListener("click", () => {
+  $("#profileDropdown").classList.add("hidden");
+  $("#appShell").classList.add("hidden"); // Cache l'application
+  $("#loginScreen").classList.remove("hidden"); // Réaffiche le login
+  $("#loginForm").reset(); // Vide les champs
+  showToast("Vous êtes déconnecté(e)."); // Message de confirmation
+});
 
 renderTranslations();
