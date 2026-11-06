@@ -11,10 +11,53 @@
   <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <div class="app-shell">
+
+    <!-- ÉCRAN DE CONNEXION (SPLIT SCREEN) -->
+  <div id="loginScreen" class="login-split">
+    <!-- Partie Gauche : Visuel & Culture -->
+    <div class="login-left">
+      <div class="login-left-content">
+        <img class="login-logo-original" src="./connecteo-logo.svg" alt="Connecteo";">
+        <div class="login-tagline">
+          <h1>Chaque expérience est unique.</h1>
+          <p>La culture client au cœur de l'excellence opérationnelle.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partie Droite : Formulaire -->
+    <div class="login-right">
+      <div class="login-card">
+        <h2>Connexion</h2>
+        <p class="muted">Accédez à votre espace de formation.</p>
+        
+        <div class="demo-hint">
+          <strong>Mode Test :</strong> Utilisez n'importe quel email et mot de passe.
+        </div>
+
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="email">Adresse email</label>
+            <input type="email" id="email" placeholder="votre.nom@connecteo.fr" required>
+          </div>
+          <div class="input-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+          </div>
+          <div class="login-actions">
+            <a href="#" class="text-button" id="forgotPassword">Mot de passe oublié ?</a>
+          </div>
+          <button type="submit" class="button button-primary login-btn">Se connecter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell hidden" id="appShell">
     <aside class="sidebar" id="sidebar">
       <a class="brand" href="#" aria-label="Connecteo Learning accueil">
-        <img class="brand-logo" src="./connecteo-logo.svg" alt="Connecteo"><span class="brand-learning">Learning</span>
+        <img class="brand-logo" src="./connecteo-logo.svg" alt="Connecteo">
+        <span class="brand-learning">Learning</span>
       </a>
       <div class="workspace-label" data-i18n="workspace">ESPACE FORMATION</div>
       <nav class="nav" aria-label="Navigation principale">
@@ -27,7 +70,7 @@
       <div class="sidebar-bottom">
         <div class="sidebar-note"><span class="status-dot"></span><div><strong data-i18n="prototype">Prototype local</strong><small data-i18n="noDatabase">Aucune base connectée</small></div></div>
         <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span><span data-i18n="settings">Paramètres</span></button>
-        <div class="user-mini"><div class="avatar">DY</div><div class="user-mini-copy"><strong>Dylan</strong><small data-i18n="projectLead">Responsable du projet</small><span class="user-slogan">Chaque expérience est unique</span></div><span class="more">•••</span></div>
+        <div class="user-mini"><div class="avatar">DY</div><div class="user-mini-copy"><strong>Dylan</strong><small data-i18n="projectLead">Responsable du projet</small><span class="user-slogan">Chaque expérience est unique</span></div><span class="more" id="profileMenuBtn">•••</span></div>
       </div>
     </aside>
 
@@ -42,54 +85,70 @@
             </select>
           </label>
           <button class="lang-switch" id="langSwitch" aria-label="Change language">EN</button>
-          <button class="icon-button" aria-label="Notifications">♧<span class="notification-dot"></span></button>
-          <div class="avatar top-avatar">DY</div>
+          <button class="icon-button" id="notifBtn" aria-label="Notifications">♧<span class="notification-dot"></span></button>
+          <div class="avatar top-avatar" id="topProfileBtn">DY</div>
         </div>
       </header>
 
       <section class="page-content">
-        <div class="welcome-row">
-          <div><p class="eyebrow" data-i18n="dashboard">TABLEAU DE BORD</p><h1 id="welcomeTitle">Bonjour Dylan <span class="wave">✳</span></h1><p class="muted" data-i18n="welcomeSub">Voici l'activité de formation et les priorités de développement.</p></div>
-          <div class="welcome-actions"><button class="button button-secondary" id="exportCsv">↓ <span data-i18n="export">Exporter les données</span></button><button class="button button-primary" id="primaryAction">＋ <span data-i18n="newCourse">Nouveau cours</span></button></div>
-        </div>
+        <!-- VUE D'ENSEMBLE -->
+        <div id="overviewView">
+          <div class="welcome-row">
+            <div><p class="eyebrow" data-i18n="dashboard">TABLEAU DE BORD</p><h1 id="welcomeTitle">Bonjour Dylan <span class="wave">✳</span></h1><p class="muted" data-i18n="welcomeSub">Voici l'activité de formation et les priorités de développement.</p></div>
+            <div class="welcome-actions"><button class="button button-secondary" id="exportCsv">↓ <span data-i18n="export">Exporter les données</span></button><button class="button button-primary" id="primaryAction">＋ <span data-i18n="newCourse">Nouveau cours</span></button></div>
+          </div>
 
-        <div class="role-banner" id="roleBanner"><strong data-i18n="demoMode">Mode démonstration</strong><span data-i18n="demoText">Les données affichées sont fictives. Connectez Supabase avant toute utilisation réelle.</span></div>
+          <div class="role-banner" id="roleBanner"><strong data-i18n="demoMode">Mode démonstration</strong><span data-i18n="demoText">Les données affichées sont fictives. Connectez Supabase avant toute utilisation réelle.</span></div>
 
-        <section class="kpi-grid" aria-label="Indicateurs clés">
-          <article class="kpi-card"><div class="kpi-top"><span data-i18n="activeLearners">Apprenants actifs</span><span class="kpi-icon teal">♙</span></div><div class="kpi-value" id="kpiLearners">128</div><div class="kpi-foot"><span class="trend">↑ 12%</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
-          <article class="kpi-card"><div class="kpi-top"><span data-i18n="completionRate">Taux de complétion</span><span class="kpi-icon blue">✓</span></div><div class="kpi-value" id="kpiCompletion">76<span class="unit">%</span></div><div class="kpi-foot"><span class="trend">↑ 5 pts</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
-          <article class="kpi-card"><div class="kpi-top"><span data-i18n="avgScore">Score moyen</span><span class="kpi-icon violet">◈</span></div><div class="kpi-value" id="kpiScore">82<span class="unit">%</span></div><div class="kpi-foot"><span class="trend">↑ 3 pts</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
-          <article class="kpi-card"><div class="kpi-top"><span data-i18n="hoursLearned">Heures de formation</span><span class="kpi-icon orange">◷</span></div><div class="kpi-value" id="kpiHours">346</div><div class="kpi-foot"><span class="trend">↑ 8%</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
-        </section>
-
-        <div class="content-grid">
-          <section class="panel activity-panel">
-            <div class="panel-heading"><div><h2 data-i18n="learningActivity">Activité d'apprentissage</h2><p class="muted" data-i18n="activitySub">Vue indicative sur les six derniers mois</p></div><select id="activityPeriod" class="small-select"><option value="6" data-i18n="last6">6 derniers mois</option><option value="3" data-i18n="last3">3 derniers mois</option></select></div>
-            <div class="chart-wrap"><div class="chart-y"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span></div><div class="chart-main"><div class="chart-grid"><i></i><i></i><i></i><i></i><i></i></div><div class="bars" id="chartBars"></div><div class="chart-x" id="chartLabels"></div></div></div>
-            <div class="chart-legend"><span><i class="legend-dot teal-bg"></i><span data-i18n="completion">Complétion</span></span><span><i class="legend-dot pale-bg"></i><span data-i18n="target">Objectif</span></span></div>
+          <section class="kpi-grid" aria-label="Indicateurs clés">
+            <article class="kpi-card"><div class="kpi-top"><span data-i18n="activeLearners">Apprenants actifs</span><span class="kpi-icon teal">♙</span></div><div class="kpi-value" id="kpiLearners">1</div><div class="kpi-foot"><span class="trend">↑ 100%</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
+            <article class="kpi-card"><div class="kpi-top"><span data-i18n="completionRate">Taux de complétion</span><span class="kpi-icon blue">✓</span></div><div class="kpi-value" id="kpiCompletion">0<span class="unit">%</span></div><div class="kpi-foot"><span class="trend">—</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
+            <article class="kpi-card"><div class="kpi-top"><span data-i18n="avgScore">Score moyen</span><span class="kpi-icon violet">◈</span></div><div class="kpi-value" id="kpiScore">—<span class="unit"></span></div><div class="kpi-foot"><span class="trend">—</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
+            <article class="kpi-card"><div class="kpi-top"><span data-i18n="hoursLearned">Heures de formation</span><span class="kpi-icon orange">◷</span></div><div class="kpi-value" id="kpiHours">0</div><div class="kpi-foot"><span class="trend">—</span><span data-i18n="vsLastMonth">vs mois précédent</span></div></article>
           </section>
 
-          <section class="panel priorities-panel">
-            <div class="panel-heading"><div><h2 data-i18n="prioritySkills">Priorités de développement</h2><p class="muted" data-i18n="skillsSub">Compétences à renforcer</p></div><button class="text-button" data-open-view="skills" data-i18n="seeAll">Voir tout →</button></div>
-            <div class="skill-list">
-              <div class="skill-row"><div class="skill-meta"><span data-i18n="customerRelations">Relation client</span><strong>68%</strong></div><div class="progress-track"><span style="width:68%"></span></div><small data-i18n="skillGap">Écart de compétence à analyser</small></div>
-              <div class="skill-row"><div class="skill-meta"><span data-i18n="dataSecurity">Sécurité de l'information</span><strong>74%</strong></div><div class="progress-track"><span style="width:74%"></span></div><small data-i18n="skillGap">Écart de compétence à analyser</small></div>
-              <div class="skill-row"><div class="skill-meta"><span data-i18n="communication">Communication assertive</span><strong>81%</strong></div><div class="progress-track"><span style="width:81%"></span></div><small data-i18n="skillGap">Écart de compétence à analyser</small></div>
+          <div class="content-grid">
+            <section class="panel activity-panel">
+              <div class="panel-heading"><div><h2 data-i18n="learningActivity">Activité d'apprentissage</h2><p class="muted" data-i18n="activitySub">Vue indicative sur les six derniers mois</p></div><select id="activityPeriod" class="small-select"><option value="6" data-i18n="last6">6 derniers mois</option><option value="3" data-i18n="last3">3 derniers mois</option></select></div>
+              <div class="chart-wrap"><div class="chart-y"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0%</span></div><div class="chart-main"><div class="chart-grid"><i></i><i></i><i></i><i></i><i></i></div><div class="bars" id="chartBars"></div><div class="chart-x" id="chartLabels"></div></div></div>
+              <div class="chart-legend"><span><i class="legend-dot teal-bg"></i><span data-i18n="completion">Complétion</span></span><span><i class="legend-dot pale-bg"></i><span data-i18n="target">Objectif</span></span></div>
+            </section>
+
+            <section class="panel priorities-panel">
+              <div class="panel-heading"><div><h2 data-i18n="prioritySkills">Priorités de développement</h2><p class="muted" data-i18n="skillsSub">Compétences à renforcer</p></div><button class="text-button" data-open-view="skills" data-i18n="seeAll">Voir tout →</button></div>
+              <div class="skill-list">
+                <div class="skill-row"><div class="skill-meta"><span>Agilité intellectuelle</span><strong>En cours</strong></div><div class="progress-track"><span style="width:25%"></span></div><small>Niveau 1 sur 4</small></div>
+              </div>
+            </section>
+          </div>
+
+          <section class="panel courses-panel">
+            <div class="panel-heading"><div><h2 id="courseSectionTitle" data-i18n="featuredCourses">Cours à suivre</h2><p class="muted" data-i18n="coursesSub">Une sélection de formations et de ressources</p></div><button class="text-button" data-open-view="courses" data-i18n="viewCatalog">Voir le catalogue →</button></div>
+            <div class="course-grid" id="courseGrid"></div>
+          </section>
+
+          <section class="panel table-panel" id="recentPanel">
+            <div class="panel-heading"><div><h2 data-i18n="recentActivity">Activité récente</h2><p class="muted" data-i18n="recentSub">Exemple de suivi des apprenants</p></div><button class="text-button" data-open-view="reports" data-i18n="viewReport">Voir le rapport →</button></div>
+            <div class="table-scroll"><table><thead><tr><th data-i18n="learner">APPRENANT</th><th data-i18n="course">FORMATION</th><th data-i18n="progress">PROGRESSION</th><th data-i18n="status">STATUT</th></tr></thead><tbody id="activityTable"></tbody></table></div>
+          </section>
+        </div>
+
+        <!-- LECTEUR DE COURS (Caché par défaut) -->
+        <div id="coursePlayerView" class="hidden">
+          <div class="welcome-row">
+            <div>
+              <button class="text-button" id="backToOverview" style="margin-bottom: 10px;">← Retour au tableau de bord</button>
+              <h1 id="coursePlayerTitle">Agilité intellectuelle</h1>
+              <p class="muted" id="coursePlayerDesc">Parcours de formation en 4 niveaux.</p>
             </div>
-          </section>
+          </div>
+          <div class="panel">
+            <div id="courseLevelsList" class="course-levels-list"></div>
+          </div>
         </div>
-
-        <section class="panel courses-panel">
-          <div class="panel-heading"><div><h2 id="courseSectionTitle" data-i18n="featuredCourses">Cours à suivre</h2><p class="muted" data-i18n="coursesSub">Une sélection de formations et de ressources</p></div><button class="text-button" data-open-view="courses" data-i18n="viewCatalog">Voir le catalogue →</button></div>
-          <div class="course-grid" id="courseGrid"></div>
-        </section>
-
-        <section class="panel table-panel" id="recentPanel">
-          <div class="panel-heading"><div><h2 data-i18n="recentActivity">Activité récente</h2><p class="muted" data-i18n="recentSub">Exemple de suivi des apprenants</p></div><button class="text-button" data-open-view="reports" data-i18n="viewReport">Voir le rapport →</button></div>
-          <div class="table-scroll"><table><thead><tr><th data-i18n="learner">APPRENANT</th><th data-i18n="course">FORMATION</th><th data-i18n="progress">PROGRESSION</th><th data-i18n="status">STATUT</th></tr></thead><tbody id="activityTable"></tbody></table></div>
-        </section>
 
         <section class="panel hidden" id="genericView"><div class="panel-heading"><div><h2 id="genericTitle"></h2><p class="muted" id="genericDescription"></p></div></div><div id="genericBody"></div></section>
+        
         <footer><span>Connecteo Learning LMS · <span data-i18n="prototypeFooter">Prototype de démarrage</span></span><span data-i18n="footerNote">Données fictives · Non connecté à Supabase</span></footer>
       </section>
     </main>
